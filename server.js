@@ -1,24 +1,28 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import cors from 'cors'
+const express = require('express');
+const fileUpload = require('express-fileupload');
 
-// Defines the port the app will run on. Defaults to 8080, but can be 
-// overridden when starting the server. For example:
-//
-//   PORT=9000 npm start
-const port = process.env.PORT || 8080
-const app = express()
+const port = process.env.PORT || 8000;
+const app = express();
 
-// Add middlewares to enable cors and json body parsing
-app.use(cors())
-app.use(bodyParser.json())
+app.use(fileUpload());
 
-// Start defining your routes here
-app.get('/', (req, res) => {
-  res.send('Hello world')
-})
+// Routes
+app.post('/upload', (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).json({ msg: "No files uploaded."});
+  }
+
+  const file = req.files.file;
+  file.mv(`${__dirname}/client/public/uploads/${file.name}`, err => {
+    if(err) {
+      console.error(err)
+      return res.status(500).send(err)
+    }
+    res.json({fileName: file.name, filePath: `/uploads/${file.name}`})
+  })
+});
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`)
+  console.log(`Server running on http://localhost:${port}`);
 })

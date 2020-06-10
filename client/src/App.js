@@ -1,9 +1,10 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 const App = () => (
-  
-    <div>App</div>
-  );
+  <div>
+    <h1>File Uploader</h1>
+  </div>
+);
 
 export default App;
